@@ -10,9 +10,9 @@ The following instructions show how to achieve the performance that we submitted
 ```
    download and install CUDA 10 and driver (https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda_10.0.130_410.48_linux)
 
-   download and install CUDNN 7 (https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v7.5.1/prod/10.0_20190418/cudnn-10.0-linux-x64-v7.5.1.10.tgz)
+   download and install CUDNN 7 library for Linux (https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v7.5.1/prod/10.0_20190418/cudnn-10.0-linux-x64-v7.5.1.10.tgz)
 
-   download and install TensorRT 5 (https://developer.nvidia.com/compute/machine-learning/tensorrt/5.1/ga/tars/TensorRT-5.1.5.0.Red-Hat.x86_64-gnu.cuda-10.0.cudnn7.5.tar.gz)
+   download and install TensorRT 5 for CentOS/RedHat 7 (https://developer.nvidia.com/compute/machine-learning/tensorrt/5.0/GA_5.0.2.6/tars/TensorRT-5.0.2.6.Red-Hat.x86_64-gnu.cuda-10.0.cudnn7.3.tar.gz)
 
    install TensorFlow 1.12 wheel package for CUDA 10 (pip install tensorflow_pkg/tensorflow-1.12.2-cp27-cp27mu-linux_x86_64.whl)
 ```

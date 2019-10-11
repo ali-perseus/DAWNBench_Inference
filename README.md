@@ -1,36 +1,58 @@
 # DAWNBench_Inference
+## Resnet26d for DAWNBench inference task on ImageNet
 
-## Resnet50 for DAWNBench inference task on ImageNet
-
-We run Resnet50 on Alibaba Cloud ecs.gn5i-c8g1.2xlarge, which consists of 1 NVIDIA P4 GPU and 8 vCPUs.
+We run Resnet26d on Alibaba Cloud ecs.gn6i-c8g1.2xlarge, which consists of 1 NVIDIA T4 GPU and 8 vCPUs.
 
 The following instructions show how to achieve the performance that we submitted to DAWNBench step by step.
 
-1. install CUDA 10 and CUDNN 7, TensorRT 5 and TensorFlow 1.12
+1. install CUDA 10 and CUDNN 7, TensorRT 6 and TensorFlow 1.12
 ```
-   download and install CUDA 10 and driver (https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda_10.0.130_410.48_linux)
+    download CUDA 10.0.130 for CentOS/RedHat 7  (https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda_10.0.130_410.48_linux)
 
-   download and install CUDNN 7 library for Linux (https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v7.5.1/prod/10.0_20190418/cudnn-10.0-linux-x64-v7.5.1.10.tgz)
+    download and install CUDNN 7.6.3.30 for CentOS/RedHat 7 (https://developer.nvidia.com/compute/machine-learning/cudnn/secure/7.6.3.30/Production/10.0_20190822/cudnn-10.0-linux-x64-v7.6.3.30.tgz)
 
-   download and install TensorRT 5 for CentOS/RedHat 7 (https://developer.nvidia.com/compute/machine-learning/tensorrt/5.0/GA_5.0.2.6/tars/TensorRT-5.0.2.6.Red-Hat.x86_64-gnu.cuda-10.0.cudnn7.3.tar.gz)
-
-   install TensorFlow 1.12 wheel package for CUDA 10 (pip install tensorflow_pkg/tensorflow-1.12.2-cp27-cp27mu-linux_x86_64.whl)
+    download and install TensorRT 6.0.1.5 for CentOS/RedHat 7 (https://developer.nvidia.com/compute/machine-learning/tensorrt/secure/6.0/GA_6.0.1.5/tars/TensorRT-6.0.1.5.CentOS-7.6.x86_64-gnu.cuda-10.0.cudnn7.6.tar.gz)
 ```
-2. git clone DAWNBench_Inference code
+
+2. install gcc && opencv && python3 && pillow && torch
+```shell
+    yum -y install gcc+ gcc-c++
+    yum -y install opencv-devel
+    yum -y install python3
+    yum -y install libSM
+    pip3 install pillow opencv-python
+    pip3 install torch torchvision
 ```
-   git lfs clone https://github.com/ali-perseus/DAWNBench_Inference.git
+
+3. git clone DAWNBench_Inference code
+```
+   git lfs clone -b resnet26d https://github.com/ali-perseus/DAWNBench_Inference.git
 ```
    Note: please install git-lfs before clone the DAWNBench_Inference. In CentOS, just running the following commands to install git-lfs:  
 ```
    yum install git-lfs  
    git lfs install  
 ```
-3. run the following commands to replicate our results submitted to DAWNBench,  
-```
-   MODEL_DIR=`pwd`/frozen_int8_graph.pb
-   DATA_DIR="directory for ImageNet evaluation tfrecord"
 
-   python resnet50_inference.py --model $MODEL_DIR  --data_dir $DATA_DIR
+4. run the following commands to replicate our results submitted to DAWNBench,  
+```shell
+   ## make sure the gpu card mode is in Persistence mode.
+   nvidia-smi -pm 1
+   ## set mclk and pclk
+   nvidia-smi -ac 5000,1590
+   export LD_LIBRARY_PATH=/path/to/TensorRT-6.0.1.5/lib:$LD_LIBRARY_PATH
+   ##resize and crop using torchvision
+   ##edit preprocress.py if necessary
+   python3 ./preprocress.py
+   ##edit build.sh if necessary
+   ##build
+   sh ./build.sh
+   ##run test
+   ./inference_test
 ```
-Note: to create TFRecords files for ImageNet evaluation data set you can use,  
-   https://github.com/tensorflow/models/blob/master/research/inception/inception/data/build_imagenet_data.py
+
+5.Congratulations! the result is as follows:
+```shell
+final inference time : 0.637316ms
+final Prec@5: 0.93028
+```

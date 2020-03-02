@@ -7,7 +7,7 @@ from torchvision import transforms
 
 def get_paths_and_labels(base_folder):
     path_list = []
-    label_names = sorted(os.listdir(base_folder))
+    label_names = os.listdir(base_folder)
     for i, sub_folder in enumerate(label_names):
         file_folder = base_folder + sub_folder + "/"
         for f_name in os.listdir(file_folder):

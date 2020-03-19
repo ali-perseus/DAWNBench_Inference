@@ -5,7 +5,7 @@ We run Resnet26d on Alibaba Cloud ecs.ebman1.26xlarge, which consists of 4 npu c
 
 The following instructions show how to achieve the performance that we submitted to DAWNBench step by step.
 
-2. install miniconda and dependencies
+1. install miniconda and dependencies
 ```shell
    wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/Miniconda3-latest-Linux-x86_64.sh
    sh Miniconda3-latest-Linux-x86_64.sh
@@ -14,15 +14,15 @@ The following instructions show how to achieve the performance that we submitted
    conda install opencv
    pip install pillow opencv-python
    pip install torch torchvision
-   pip install hgai-centos_rel.whl
+   pip install hgai-centos_rel_1.0.4.sp1.whl
 ```
 
-3. git clone DAWNBench_Inference code
+2. git clone DAWNBench_Inference code
 ```
    git clone https://github.com/ali-perseus/DAWNBench_Inference.git
 ```
 
-4. run the following commands to replicate our results submitted to DAWNBench,  
+3. run the following commands to replicate our results submitted to DAWNBench,  
 ```shell
    ##resize and crop using torchvision
    ##edit preprocress.py if necessary
@@ -34,8 +34,8 @@ The following instructions show how to achieve the performance that we submitted
    sh ./test.sh
 ```
 
-5.Congratulations! the result is as follows:
+4.Congratulations! the result is as follows:
 ```shell
-final inference time : 0.11671ms
-final Prec@5: 0.93178
+final inference time : 0.0739278 ms
+final Prec@5: 0.93156
 ```

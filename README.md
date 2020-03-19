@@ -3,6 +3,8 @@
 
 We run Resnet26d on Alibaba Cloud ecs.ebman1.26xlarge, which consists of 4 npu core and 104 vCPUs.
 
+The model and inference pipeline are improved by Apsara AI Acceleration(AIACC) team in Alibaba Cloud.
+
 The following instructions show how to achieve the performance that we submitted to DAWNBench step by step.
 
 1. install miniconda and dependencies

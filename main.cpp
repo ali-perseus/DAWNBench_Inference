@@ -25,13 +25,14 @@ const std::vector<std::pair<std::string, int>> read_label(
 int main(void) {
     DAWNBench_Inference inference("resnet26d.engine");
     std::vector<std::pair<std::string, int>> dataset = read_label("./");
+    int dataset_size = dataset.size();
     double totaltime = 0;
-    int top5_pass_count = 0;
+    int top5_count = 0;
     int image_count = 0;
-    char(*preprocess_data)[3 * 224 * 224] = new char[50000][3 * 224 * 224];
-    int* label = new int[50000];
+    char(*preprocess_data)[3 * 224 * 224] = new char[dataset_size][3 * 224 * 224];
+    int* label = new int[dataset_size];
     // preprocess_data
-    for (int i = 0; i < 50000; i++) {
+    for (int i = 0; i < dataset_size; i++) {
         auto& data = dataset[i];
         cv::Mat img_bgr = cv::imread(data.first);
         inference.preprocessing_data(preprocess_data[i], img_bgr);
@@ -41,7 +42,8 @@ int main(void) {
         }
     }
     // inference
-    for (int image_idx = 0; image_idx < 50000; image_idx++) {
+    for (int image_idx = 0; image_idx < dataset_size; image_idx++) {
+        inference.do_preload(preprocess_data[image_idx]);
         // do inference
         auto tStart = std::chrono::high_resolution_clock::now();
         std::vector<int> rst =
@@ -54,13 +56,13 @@ int main(void) {
         image_count += 1;
         for (int i = 0; i < 5; i++) {
             if (rst[i] == label[image_idx]) {
-                top5_pass_count += 1;
+                top5_count += 1;
                 break;
             }
         }
         if (image_count % 100 == 0) {
             std::cout << "run at " << image_count
-                      << ": Prec@5: " << (double)top5_pass_count / image_count
+                      << ": Prec@5: " << (double)top5_count / image_count
                       << std::endl;
             std::cout << "inference time at " << image_count << " : "
                       << totaltime / image_count << " ms" << std::endl;
@@ -68,7 +70,7 @@ int main(void) {
     }
     std::cout << "final inference time : " << totaltime / dataset.size()
               << " ms" << std::endl;
-    std::cout << "final Prec@5: " << (double)top5_pass_count / image_count
+    std::cout << "final Prec@5: " << (double)top5_count / image_count
               << std::endl;
     delete[] preprocess_data;
     delete[] label;
